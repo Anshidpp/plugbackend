@@ -3,7 +3,7 @@ const app = express.Router()
 const db = require('../middelware/db')
 require('dotenv').config();
 app.use(express.json()); 
-
+const {validateJwt,authorizeRoles} = require('../middelware/auth')
 
 function haversine(lat1, lon1, lat2, lon2) {
     const R = 6371000; // Earth's radius in meters
@@ -20,9 +20,10 @@ function haversine(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+// ..................................... find chargers .............................................................
+
 app.get('/api/chargers', async (req, res) => {
     // console.log("/api/chargers",req.body);
-    
     try {
         const { lat, long, radius } = req.query;
 
@@ -49,6 +50,31 @@ app.get('/api/chargers', async (req, res) => {
     }
 });
 
+
+// .............................................. add vehicles ..........................................
+
+app.post('/insert/vehicles/:userid',
+    // validateJwt,
+    // authorizeRoles('customer','admin','staff','dealer'),
+     async (req,res) => {
+    const { modelID , brand , registerno , vin } = req.body;
+    const { userid }= req.params;
+    if (!modelID || !brand || !registerno || !vin  ) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        await db.query(
+            'INSERT INTO vehicles(modelid, brand, registerno, vin, userid) VALUES ($1, $2, $3, $4, $5)',
+            [modelID, brand, registerno, vin, userid]
+        );
+
+        return res.status(200).json({ message: "Insertion successful" });
+    } catch (error) {
+        console.error("Database error:", error);
+        return res.status(500).json({ error: "Error inserting data" });
+    }
+})
 
 
 module.exports = app
