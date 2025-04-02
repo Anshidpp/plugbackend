@@ -9,6 +9,7 @@ dashboard.use(express.json());
 
 dashboard.post('/insert/charger', async (req, res) => {
     console.log("reqbody:", req.body);
+    
 
     const { chargerid, lat, long, state, status } = req.body;
 

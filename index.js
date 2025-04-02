@@ -5,7 +5,8 @@ const appbackend = require('./app/app')
 app.use('/app', appbackend)
 const dashboard = require('./dashboard/dashboard')
 app.use('/dashboard', dashboard)
-
+const usermanage = require('./app/usermange')
+app.use('/user',usermanage)
 
 const fs = require('fs');
 const http = require('http');

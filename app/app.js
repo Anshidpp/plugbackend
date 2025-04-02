@@ -54,11 +54,12 @@ app.get('/api/chargers', async (req, res) => {
 // .............................................. add vehicles ..........................................
 
 app.post('/insert/vehicles/:userid',
-    // validateJwt,
-    // authorizeRoles('customer','admin','staff','dealer'),
+    validateJwt,
+    authorizeRoles('customer','admin','staff','dealer'),
      async (req,res) => {
     const { modelID , brand , registerno , vin } = req.body;
     const { userid }= req.params;
+    // const user_id = req.user.id
     if (!modelID || !brand || !registerno || !vin  ) {
         return res.status(400).json({ error: "Missing required fields" });
     }
